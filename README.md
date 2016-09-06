@@ -2,7 +2,7 @@
 rabbitmq示例代码，包括纯java运行和与spring结合运行。
 
 
-Windows上安装RabbitMQ
+# Windows上安装RabbitMQ
 
 需要先安装erlang。
 
@@ -29,6 +29,7 @@ Erlang特性：
 安装步骤：
 
 1.下载erlang  http://www.erlang.org/download.html（如果下载: OTP 17.1 Windows 64-bit Binary File (91.8 MB)）。
+如果下载不到，可以到我的360网盘上下载：https://yunpan.cn/OcMIYJIbrxAXSj  访问密码 bb07
 2.安装下载的exe文件，注意安装的目录中不要存在空格。
 3.配置环境变量。在系统变量中建立变量名为“ERL_HOME”，值为erlang的安装目录。
 4.在PATH变量中添加“%ERL_HOME%\bin”。
