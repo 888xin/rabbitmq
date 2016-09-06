@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+     http://www.springframework.org/schema/beans
+     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+     http://www.springframework.org/schema/rabbit
+     http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd">
+    <!--配置connection-factory，指定连接rabbit server参数 -->
+    <rabbit:connection-factory id="connectionFactory"
+                               username="guest" password="guest" host="localhost" port="5672" />
+
+
+    <!--direct 一对一传输-->
+    <!--定义rabbit template用于数据的接收和发送 -->
+    <rabbit:template id="amqpTemplate"  connection-factory="connectionFactory"
+                     exchange="exchangeTest" />
+
+    <!--通过指定下面的admin信息，当前producer中的exchange和queue会在rabbitmq服务器上自动生成 -->
+    <rabbit:admin connection-factory="connectionFactory" />
+
+    <!--定义queue -->
+    <rabbit:queue name="queueTest" durable="true" auto-delete="false" exclusive="false" />
+
+    <!-- 定义direct exchange，绑定queueTest -->
+    <rabbit:direct-exchange name="exchangeTest" durable="true" auto-delete="false">
+        <rabbit:bindings>
+            <rabbit:binding queue="queueTest" key="queueTestKey"></rabbit:binding>
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+
+
+    <!-- 消息接收者 -->
+    <bean id="messageReceiver" class="com.xin.consumer.MessageConsumer"></bean>
+
+    <!-- queue litener  观察 监听模式 当有消息到达时会通知监听在对应的队列上的监听对象-->
+    <rabbit:listener-container connection-factory="connectionFactory">
+        <rabbit:listener queues="queueTest" ref="messageReceiver"/>
+    </rabbit:listener-container>
+
+
+
+
+
+
+
+
+
+
+
+    <!--topic 匹配传输-->
+    <rabbit:template id="topicTemplate"  connection-factory="connectionFactory"
+                     exchange="topicExchange"/>
+
+    <!--定义queue -->
+    <rabbit:queue name="topicQueue" durable="true" auto-delete="false" exclusive="false" />
+
+    <!--topic交换器 pattern与topicTemplate.convertAndSend("foo.bar",message);第一个参数匹配-->
+    <rabbit:topic-exchange name="topicExchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="topicQueue" pattern="info.*" />
+        </rabbit:bindings>
+    </rabbit:topic-exchange>
+
+    <rabbit:listener-container connection-factory="connectionFactory">
+        <rabbit:listener ref="topic1" queues="topicQueue"/>
+    </rabbit:listener-container>
+
+    <bean id="topic1" class="com.xin.consumer.TopicConsumer"/>
+
+
+
+
+
+
+
+
+    <!--fanout 把一条消息通过多条队列传输出去-->
+
+    <rabbit:template id="fanoutTemplate"  connection-factory="connectionFactory"
+                     exchange="fanoutExchange"/>
+
+    <!--定义queue -->
+    <rabbit:queue name="fanoutQueue" durable="true" auto-delete="false" exclusive="false" />
+    <rabbit:queue name="fanoutQueue2" durable="true" auto-delete="false" exclusive="false" />
+
+    <!--topic交换器-->
+    <rabbit:fanout-exchange name="fanoutExchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="fanoutQueue"></rabbit:binding>
+            <rabbit:binding queue="fanoutQueue2"></rabbit:binding>
+        </rabbit:bindings>
+    </rabbit:fanout-exchange>
+
+    <rabbit:listener-container connection-factory="connectionFactory">
+        <rabbit:listener ref="fanoutConsumer" queues="fanoutQueue"/>
+        <rabbit:listener ref="fanoutConsumer2" method="foo" queues="fanoutQueue2"/>
+    </rabbit:listener-container>
+
+    <bean id="fanoutConsumer" class="com.xin.consumer.FanoutConsumer"/>
+    <bean id="fanoutConsumer2" class="com.xin.consumer.FanoutConsumer2"/>
+
+</beans>
