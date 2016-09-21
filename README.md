@@ -187,3 +187,5 @@ user可以有不同的权限，包括 “management”,”policymaker”,”moni
   {rabbitmq_management,       [ {http_log_dir,  "/tmp/rabbit-mgmt"},
                                 {rates_mode,    basic}] }
 ].
+
+![RabbitMQ应用1流程图](http://7xo8gu.com1.z0.glb.clouddn.com/RabbitMQ%E5%BA%94%E7%94%A81.png "RabbitMQ应用1流程图")
