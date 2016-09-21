@@ -8,14 +8,4 @@
 
     <import resource="classpath*:rabbitMq.xml" />
 
-
-    <!-- 扫描指定package下所有带有如@controller,@services,@resource,@ods并把所注释的注册为Spring Beans -->
-    <context:component-scan base-package="com.xin.consumer,com.xin.producer" />
-
-
-    <!-- 激活annotation功能 -->
-    <context:annotation-config />
-    <!-- 激活annotation功能 -->
-    <context:spring-configured />
-
 </beans>
