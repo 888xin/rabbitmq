@@ -30,12 +30,14 @@
     <!--定义queue -->
     <rabbit:queue name="fanoutQueue" durable="true" auto-delete="false" exclusive="false" />
     <rabbit:queue name="fanoutQueue2" durable="true" auto-delete="false" exclusive="false" />
+    <rabbit:queue name="fanoutQueue4" durable="true" auto-delete="false" exclusive="false" />
 
     <!--fanout交换器-->
     <rabbit:fanout-exchange name="fanoutExchange">
         <rabbit:bindings>
             <rabbit:binding queue="fanoutQueue"></rabbit:binding>
             <rabbit:binding queue="fanoutQueue2"></rabbit:binding>
+            <rabbit:binding queue="fanoutQueue4"></rabbit:binding>
         </rabbit:bindings>
     </rabbit:fanout-exchange>
 
